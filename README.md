@@ -56,6 +56,7 @@ conda create -n env_name astropy pandas numpy photutils matplotlib seaborn
 - **`utilities.py`**: Contains some useful functions to manage the data.
 - **`visualization.py`**: Contains some useful functions to visualize the data.
 - **`main.ipynb`**: Demonstrates the usage of `PhotometryTool` step by step.
+- **`testing.ipynb`**: Just for me to test and debug stuff (please don't open it).
 
 ### Example Workflow
 
