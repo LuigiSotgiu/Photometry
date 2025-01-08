@@ -1,6 +1,7 @@
 import warnings
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from astropy.io import fits
 from astropy.time import Time
 from astropy.wcs import WCS, FITSFixedWarning
@@ -125,3 +126,38 @@ class PhotometryTool:
             'aperture_sum': 'star_aperture_sum',
             'aperture_sum.1': 'sky_aperture_sum'
         })
+        
+    def plot_curve_of_growth(self, ra_dec_coordinates, max_radius, step=1):
+        """
+        Plot the curve of growth for the given RA/DEC coordinates.
+
+        Parameters:
+        - ra_dec_coordinates (pd.DataFrame): DataFrame with RA/DEC positions.
+        - max_radius (float): Maximum radius for the curve of growth.
+        - step (float): Step size for the radius.
+        """
+        pixel_positions = self._convert_ra_dec_to_pixel(ra_dec_coordinates)
+        x_pixel, y_pixel = zip(*pixel_positions)
+        x_pixel, y_pixel = self._filter_pixels(x_pixel, y_pixel)
+        centroids = list(zip(*self._compute_centroids(x_pixel, y_pixel)))
+        
+        _, _, bkg_mean = self._perform_photometry(centroids)
+        
+        radii = np.arange(step, max_radius + step, step)
+        fluxes = []
+
+        for r in radii:
+            star_apertures = CircularAperture(centroids, r=r)
+            phot_source = aperture_photometry(self.data, star_apertures)
+            fluxes.append([phot - (bkg * np.pi * r**2) for phot, bkg in zip(phot_source['aperture_sum'], bkg_mean)])
+        
+        plt.figure(figsize=(10, 6))
+        plt.axvline(self.r_star, color='k', linestyle='--', label='Star Aperture Radius')
+        plt.axvline(self.r_gap, color='k', linestyle='--', label='Sky Annulus Inner Radius')
+        plt.axvline(self.r_sky, color='k', linestyle='--', label='Sky Annulus Outer Radius')
+        plt.plot(radii, fluxes, marker='o')
+        plt.xlabel('Aperture Radius (pixels)')
+        plt.ylabel('Flux (D.N.)')
+        plt.title('Curve of Growth')
+        plt.grid(True)
+        plt.show()
