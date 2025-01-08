@@ -11,6 +11,7 @@ This repository provides a tool for performing aperture photometry on `.fits` im
   - Star aperture sum
   - Sky annulus sum
   - Instrumental magnitude
+  - Instrumental magnitude error
 - Output results in a clear and structured `pandas` DataFrame.
 
 ---
@@ -29,6 +30,10 @@ This tool requires the following Python packages:
   Installation: `pip install numpy`
 - **Photutils**: For performing aperture photometry.  
   Installation: `pip install photutils`
+- **Matplotlib**: For visualization.
+  Installation: `pip install matplotlib`
+- **Seaborn**: For visualization.
+  Installation: `pip install seaborn`
 
 ### Optional: Using a Virtual Environment
 
@@ -39,16 +44,19 @@ If you working on Windows I suggest using:
 
 Using this setup you could simply create a Virtual Environment using this code on wsl:
 ```bash
-conda create -n env_name astropy pandas numpy photutils
+conda create -n env_name astropy pandas numpy photutils matplotlib seaborn
 ```
 
 ## Usage
 
 ### File Structure
 
-- **`functions.py`**: Contains the main photometry function.
-  - `PhotometryTool`: Performs the photometric analysis.
+- **`Photometry_Tool.py`**: Contains the main class structure.
+  - `PhotometryTool`: The Class to performs the photometric analysis.
+- **`utilities.py`**: Contains some useful functions to manage the data.
+- **`visualization.py`**: Contains some useful functions to visualize the data.
 - **`main.ipynb`**: Demonstrates the usage of `PhotometryTool` step by step.
+- **`testing.ipynb`**: Just for me to test and debug stuff (please don't open it).
 
 ### Example Workflow
 
